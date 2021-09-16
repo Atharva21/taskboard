@@ -1,4 +1,4 @@
-import status from "http-status";
+const status = require("http-status");
 
 class APIError extends Error {
 	statusCode;

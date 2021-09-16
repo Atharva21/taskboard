@@ -1,14 +1,17 @@
 const status = require("http-status");
 
+const APIError = require("../util/APIError");
+const log = require("../util/logger");
+
 module.exports = apiresponse = (_, res, next) => {
-	res.sendSuccess = (message) => {
+	res.successMessage = (message) => {
 		return res.status(200).json({
 			success: true,
 			message,
 		});
 	};
 
-	res.sendSuccessWithData = (data) => {
+	res.successData = (data) => {
 		return res.status(200).json({
 			success: true,
 			data,
@@ -16,7 +19,8 @@ module.exports = apiresponse = (_, res, next) => {
 	};
 
 	res.sendError = (error) => {
-		if (error instanceof BaseError) {
+		log.error(error);
+		if (error instanceof APIError) {
 			return res.status(error.statusCode).json({
 				success: false,
 				message: error.description,

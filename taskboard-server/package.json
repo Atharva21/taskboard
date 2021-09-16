@@ -2,10 +2,10 @@
 	"name": "taskboard-server",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "app.js",
 	"scripts": {
-		"dev": "nodemon src/index.js",
-		"start": "node src/index.js"
+		"dev": "nodemon src/app.js",
+		"start": "node src/app.js"
 	},
 	"keywords": [],
 	"author": "",
