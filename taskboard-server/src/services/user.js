@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 
 const UserModel = require("../models/user");
 const APIError = require("../util/APIError");
+const log = require("../util/logger");
 
 // signup
 exports.saveUser = async ({ username, password, email }) => {
@@ -45,7 +46,7 @@ exports.comparePassword = async ({ username, password }) => {
 
 const getUserByUsername = async (username) => {
 	try {
-		const user = UserModel.findOne({
+		const user = await UserModel.findOne({
 			username,
 		});
 		if (!user) {
