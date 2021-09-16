@@ -14,13 +14,8 @@ const {
 	SESSION_SECRET,
 	PROD,
 } = require("./util/environment");
-// const projectRoutes = require("./routes/project.routes");
-// const userRoutes = require("./routes/user.routes");
-// const columnRoutes = require("./routes/column.routes");
-// const ticketRoutes = require("./routes/ticket.routes");
-const apiresponse = require("./middlewares/APIResponse");
+const apiresponse = require("./middlewares/apiresponse");
 const log = require("./util/logger");
-// const { = require(} from "./middlewares/validator");
 
 const RedisStore = connectRedis(session);
 const redisClient = redis.createClient({
@@ -62,12 +57,6 @@ app.use(
 );
 
 app.use(apiresponse);
-// app.use(validateHeader);
-
-// app.use("/api/v1/users", userRoutes);
-// app.use("/api/v1/projects", projectRoutes);
-// app.use("/api/v1/columns", columnRoutes);
-// app.use("/api/v1/tickets", ticketRoutes);
 
 app.use((_, res) => res.sendAPIStatus(404));
 

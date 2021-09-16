@@ -1,6 +1,6 @@
 import status from "http-status";
 
-class BaseError extends Error {
+class APIError extends Error {
 	statusCode;
 	description;
 	isOperational;
@@ -15,4 +15,4 @@ class BaseError extends Error {
 	}
 }
 
-module.exports = BaseError;
+module.exports = APIError;
