@@ -39,3 +39,23 @@ exports.updateContentById = async (taskId, content) => {
 		return Promise.reject(error);
 	}
 };
+
+exports.deleteTaskById = async (columnId, taskId) => {
+	try {
+		const deletedTask = await TaskModel.findByIdAndDelete(taskId, {
+			new: false,
+		});
+		if (!deletedTask) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `taskId ${taskId} not found`,
+				})
+			);
+		}
+		await columnService.removeTaskIdFrom(columnId, taskId);
+		return deletedTask;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};

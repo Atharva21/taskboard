@@ -23,3 +23,14 @@ exports.updateTask = async (req, res) => {
 		return res.sendError(error);
 	}
 };
+
+exports.deleteTask = async (req, res) => {
+	try {
+		const { taskId } = req.params;
+		const { columnId } = req.body;
+		const deletedTask = await taskService.deleteTaskById(columnId, taskId);
+		return res.successData(deletedTask);
+	} catch (error) {
+		return res.sendError(error);
+	}
+};

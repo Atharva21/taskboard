@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const { Types } = require("mongoose");
 
 const UserModel = require("../models/user");
 const APIError = require("../util/APIError");

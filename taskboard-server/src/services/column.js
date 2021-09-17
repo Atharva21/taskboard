@@ -2,6 +2,7 @@ const ColumnModel = require("../models/column");
 const APIError = require("../util/APIError");
 const boardService = require("./board");
 const log = require("../util/logger");
+const { Types } = require("mongoose");
 
 exports.saveColumn = async ({ boardId, title }) => {
 	try {

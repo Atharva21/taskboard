@@ -2,6 +2,7 @@ const BoardModel = require("../models/board");
 const APIError = require("../util/APIError");
 const userService = require("./user");
 const log = require("../util/logger");
+const { Types } = require("mongoose");
 
 exports.saveBoard = async (userId, { title }) => {
 	try {

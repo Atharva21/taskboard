@@ -24,4 +24,11 @@ router.patch(
 	taskController.updateTask
 );
 
+// delete task
+router.delete(
+	"/:taskId",
+	validator.validatePresentInBody("columnId"),
+	taskController.deleteTask
+);
+
 module.exports = router;
