@@ -3,7 +3,10 @@ const log = require("../util/logger");
 
 exports.saveBoard = async (req, res) => {
 	try {
-		const savedBoard = await boardService.saveBoard(req.body);
+		const savedBoard = await boardService.saveBoard(
+			req.session.userId,
+			req.body
+		);
 		return res.successData(savedBoard);
 	} catch (error) {
 		return res.sendError(error);

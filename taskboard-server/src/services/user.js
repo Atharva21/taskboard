@@ -32,13 +32,67 @@ exports.comparePassword = async ({ username, password }) => {
 		const user = await getUserByUsername(username);
 		const isValid = await bcrypt.compare(password, user?.password);
 		return isValid
-			? Promise.resolve(true)
+			? Promise.resolve(user._id)
 			: Promise.reject(
 					new APIError({
 						statusCode: 401,
 						description: "invalid credentials",
 					})
 			  );
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+exports.addBoardIdToUser = async (userId, boardId) => {
+	try {
+		const updatedUser = await UserModel.findByIdAndUpdate(
+			userId,
+			{
+				$push: {
+					boardIds: boardId,
+				},
+			},
+			{
+				new: true,
+			}
+		);
+		if (!updatedUser) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `userId ${userId} not found`,
+				})
+			);
+		}
+		return updatedUser;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+exports.removeBoardIdFromUser = async (userId, boardId) => {
+	try {
+		const updatedUser = await UserModel.findByIdAndUpdate(
+			userId,
+			{
+				$pull: {
+					boardIds: new Types.ObjectId(boardId),
+				},
+			},
+			{
+				new: true,
+			}
+		);
+		if (!updatedUser) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `userId ${userId} not found`,
+				})
+			);
+		}
+		return updatedUser;
 	} catch (error) {
 		return Promise.reject(error);
 	}

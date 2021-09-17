@@ -14,8 +14,8 @@ exports.signUp = async (req, res) => {
 
 exports.login = async (req, res) => {
 	try {
-		await userService.comparePassword(req.body);
-		req.session.loggedIn = true;
+		const userId = await userService.comparePassword(req.body);
+		req.session.userId = userId;
 		return res.successMessage("logged in");
 	} catch (error) {
 		return res.sendError(error);

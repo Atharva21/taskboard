@@ -17,7 +17,6 @@ router.post(
 
 router.patch(
 	"/:boardId",
-	validator.validatePathParamPresent("boardId"),
 	validator.validatePresentInBody("title"),
 	validator.validateCharacterLength("title", { min: 1, max: 30 }),
 	boardController.updateBoard

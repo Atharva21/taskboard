@@ -3,7 +3,7 @@ const APIError = require("../util/APIError");
 const log = require("../util/logger");
 
 exports.isLoggedIn = (req, res, next) => {
-	if (req.session.loggedIn) {
+	if (req.session.userId) {
 		return next();
 	} else {
 		return res.sendError(
@@ -69,27 +69,5 @@ exports.validateCharacterLength = (parameter, { min, max }) => {
 			return res.sendStatus(400);
 		}
 		return next();
-	};
-};
-
-exports.validatePathParamPresent = (parameter) => {
-	return async (req, res, next) => {
-		try {
-			await param(parameter)
-				.notEmpty()
-				.withMessage(`${parameter} must be present in path`)
-				.run(req);
-			const validationErrors = validationResult(req);
-			if (validationErrors && !validationErrors.isEmpty()) {
-				return res.status(400).json({
-					success: false,
-					errors: validationErrors["errors"],
-				});
-			}
-			return next();
-		} catch (error) {
-			log.error(error);
-			return res.sendAPIStatus(400);
-		}
 	};
 };
