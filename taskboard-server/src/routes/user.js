@@ -14,6 +14,7 @@ router.post(
 	userController.signUp
 );
 
+// login
 router.post(
 	"/login",
 	validator.validatePresentInBody("username", "password"),
@@ -21,5 +22,8 @@ router.post(
 	validator.validateCharacterLength("password", { min: 6, max: 20 }),
 	userController.login
 );
+
+// logout
+router.post("/logout", validator.isLoggedIn, userController.logout);
 
 module.exports = router;

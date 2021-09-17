@@ -19,13 +19,13 @@ module.exports = apiresponse = (_, res, next) => {
 	};
 
 	res.sendError = (error) => {
-		log.error(error);
 		if (error instanceof APIError) {
 			return res.status(error.statusCode).json({
 				success: false,
 				message: error.description,
 			});
 		}
+		log.error(error);
 		return res.status(500).json({
 			success: false,
 			message: "Internal Server Error.",

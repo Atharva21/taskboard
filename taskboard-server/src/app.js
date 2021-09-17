@@ -17,6 +17,9 @@ const {
 const apiresponse = require("./middlewares/apiresponse");
 const log = require("./util/logger");
 const userRoutes = require("./routes/user");
+const boardRoutes = require("./routes/board");
+const columnRoutes = require("./routes/column");
+const taskRoutes = require("./routes/task");
 
 const RedisStore = connectRedis(session);
 const redisClient = redis.createClient({
@@ -25,8 +28,10 @@ const redisClient = redis.createClient({
 });
 
 const app = express();
+
 //adding logging middleware
 app.use(morgan(PROD ? "combined" : "dev"));
+
 /*
     Adding cors, form-body and json middlewares
     going to use cookies so setting credentials to true, and allowing fixed origin
@@ -60,6 +65,9 @@ app.use(
 app.use(apiresponse);
 
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/boards", boardRoutes);
+app.use("/api/v1/columns", columnRoutes);
+app.use("/api/v1/tasks", taskRoutes);
 
 app.use((_, res) => res.sendAPIStatus(404));
 
