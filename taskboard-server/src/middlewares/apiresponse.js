@@ -20,6 +20,13 @@ module.exports = apiresponse = (_, res, next) => {
 
 	res.sendError = (error) => {
 		if (error instanceof APIError) {
+			if (error.data) {
+				return res.status(error.statusCode).json({
+					success: false,
+					data: error.data,
+				});
+			}
+
 			return res.status(error.statusCode).json({
 				success: false,
 				message: error.description,

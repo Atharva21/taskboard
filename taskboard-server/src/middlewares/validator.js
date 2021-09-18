@@ -1,5 +1,6 @@
 const { body, check, validationResult, param } = require("express-validator");
 const APIError = require("../util/APIError");
+const userService = require("../services/user");
 const log = require("../util/logger");
 
 exports.isLoggedIn = (req, res, next) => {
@@ -65,9 +66,21 @@ exports.validateCharacterLength = (parameter, { min, max }) => {
 					errors: validationErrors["errors"],
 				});
 			}
+			return next();
 		} catch (error) {
 			return res.sendStatus(400);
 		}
-		return next();
 	};
+};
+
+exports.validateBoardIsOfUser = async (req, res, next) => {
+	try {
+		await userService.validateBoardIdPresent(
+			req.session.userId,
+			req.params.boardId
+		);
+		return next();
+	} catch (error) {
+		return res.sendError(error);
+	}
 };

@@ -147,3 +147,28 @@ exports.getColumnsFromColumnIds = async (columnIds) => {
 		return Promise.reject(error);
 	}
 };
+
+exports.updateTaskIds = async (columnId, taskIds) => {
+	try {
+		const updatedColumn = await ColumnModel.findByIdAndUpdate(
+			columnId,
+			{
+				taskIds,
+			},
+			{
+				new: true,
+			}
+		);
+		if (!updatedColumn) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `columnId ${columnId} not found`,
+				})
+			);
+		}
+		return updatedColumn;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};

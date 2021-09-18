@@ -46,3 +46,13 @@ exports.getBoard = async (req, res) => {
 		return res.sendError(error);
 	}
 };
+
+exports.updateState = async (req, res) => {
+	try {
+		const { boardId } = req.params;
+		const updatedBoard = await boardService.updateState(boardId, req.body);
+		res.successData(updatedBoard);
+	} catch (error) {
+		return res.sendError(error);
+	}
+};

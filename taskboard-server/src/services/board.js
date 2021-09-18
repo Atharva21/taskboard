@@ -117,6 +117,31 @@ exports.deleteBoardById = async (userId, boardId) => {
 	}
 };
 
+const updateColumnIds = async (boardId, columnIds) => {
+	try {
+		const updatedBoard = await BoardModel.findByIdAndUpdate(
+			boardId,
+			{
+				columnIds,
+			},
+			{
+				new: true,
+			}
+		);
+		if (!updatedBoard) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `boardId ${boardId} not found`,
+				})
+			);
+		}
+		return updatedBoard;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
 exports.getFullBoard = async (boardId) => {
 	try {
 		const board = await BoardModel.findById(boardId);
@@ -154,5 +179,65 @@ exports.getFullBoard = async (boardId) => {
 		};
 	} catch (error) {
 		return Promise.reject(error);
+	}
+};
+
+exports.updateState = async (boardId, { board, columns }) => {
+	try {
+		const oldState = await this.getFullBoard(boardId);
+		const oldColumnIds = oldState.board.columnIds;
+		const oldTaskIds = [];
+		Object.keys(oldState.tasks).forEach((taskId) => {
+			oldTaskIds.push(taskId);
+		});
+
+		if (board && board.columnIds) {
+			// validate columnIds are same.
+			if (
+				JSON.stringify([...oldColumnIds].sort()) !==
+				JSON.stringify([...board.columnIds].sort())
+			) {
+				throw new APIError({
+					statusCode: 400,
+				});
+			}
+			await updateColumnIds(boardId, board.columnIds);
+		}
+		if (columns) {
+			// validate taskIds present for each column
+			let newTaskIds = [];
+			Object.entries(columns).forEach(([_, column]) => {
+				if (!column.taskIds) {
+					throw new APIError({
+						statusCode: 400,
+					});
+				}
+				newTaskIds = newTaskIds.concat(column.taskIds);
+			});
+			// validate taskIds are same.
+			if (
+				JSON.stringify(oldTaskIds.sort()) !==
+				JSON.stringify(newTaskIds.sort())
+			) {
+				throw new APIError({
+					statusCode: 400,
+				});
+			}
+
+			await Promise.all(
+				Object.entries(columns).map(([_, column]) =>
+					columnService.updateTaskIds(column._id, column.taskIds)
+				)
+			);
+		}
+		return await this.getFullBoard(boardId);
+	} catch (error) {
+		// even if update fails, client should get the actual state.
+		return Promise.reject(
+			new APIError({
+				statusCode: 400,
+				data: await this.getFullBoard(boardId),
+			})
+		);
 	}
 };

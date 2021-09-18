@@ -16,17 +16,33 @@ router.post(
 );
 
 // get board
-router.get("/:boardId", boardController.getBoard);
+router.get(
+	"/:boardId",
+	validator.validateBoardIsOfUser,
+	boardController.getBoard
+);
+
+// update state (move around columns/tasks)
+router.post(
+	"/:boardId",
+	validator.validateBoardIsOfUser,
+	boardController.updateState
+);
 
 // update board title
 router.patch(
 	"/:boardId",
+	validator.validateBoardIsOfUser,
 	validator.validatePresentInBody("title"),
 	validator.validateCharacterLength("title", { min: 1, max: 30 }),
 	boardController.updateBoard
 );
 
 // delete board
-router.delete("/:boardId", boardController.deleteBoard);
+router.delete(
+	"/:boardId",
+	validator.validateBoardIsOfUser,
+	boardController.deleteBoard
+);
 
 module.exports = router;
