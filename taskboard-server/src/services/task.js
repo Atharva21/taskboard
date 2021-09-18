@@ -80,3 +80,16 @@ exports.deleteMultipleTasks = async (taskIds) => {
 		return Promise.reject(error);
 	}
 };
+
+exports.getTasksByTaskIds = async (taskIds) => {
+	try {
+		const tasks = await TaskModel.find({
+			_id: {
+				$in: taskIds,
+			},
+		});
+		return tasks;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};

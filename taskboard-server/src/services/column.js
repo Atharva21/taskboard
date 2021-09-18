@@ -134,3 +134,16 @@ exports.deleteMultipleColumns = async (columnIds) => {
 		return Promise.reject(error);
 	}
 };
+
+exports.getColumnsFromColumnIds = async (columnIds) => {
+	try {
+		const columns = await ColumnModel.find({
+			_id: {
+				$in: columnIds,
+			},
+		});
+		return columns;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};

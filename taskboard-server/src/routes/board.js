@@ -15,6 +15,10 @@ router.post(
 	boardController.saveBoard
 );
 
+// get board
+router.get("/:boardId", boardController.getBoard);
+
+// update board title
 router.patch(
 	"/:boardId",
 	validator.validatePresentInBody("title"),
@@ -22,6 +26,7 @@ router.patch(
 	boardController.updateBoard
 );
 
+// delete board
 router.delete("/:boardId", boardController.deleteBoard);
 
 module.exports = router;

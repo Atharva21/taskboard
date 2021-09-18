@@ -36,3 +36,13 @@ exports.deleteBoard = async (req, res) => {
 		return res.sendError(error);
 	}
 };
+
+exports.getBoard = async (req, res) => {
+	try {
+		const { boardId } = req.params;
+		const board = await boardService.getFullBoard(boardId);
+		return res.successData(board);
+	} catch (error) {
+		return res.sendError(error);
+	}
+};
