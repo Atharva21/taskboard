@@ -1,6 +1,7 @@
 const BoardModel = require("../models/board");
 const APIError = require("../util/APIError");
 const userService = require("./user");
+const columnService = require("./column");
 const log = require("../util/logger");
 const { Types } = require("mongoose");
 
@@ -91,6 +92,25 @@ exports.removeColumnIdFromBoard = async (boardId, columnId) => {
 			);
 		}
 		return updatedBoard;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+exports.deleteBoardById = async (userId, boardId) => {
+	try {
+		await userService.removeBoardIdFromUser(userId, boardId);
+		const deletedBoard = await BoardModel.findByIdAndDelete(boardId);
+		if (!deletedBoard) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `boardId ${boardId} not found`,
+				})
+			);
+		}
+		await columnService.deleteMultipleColumns(deletedBoard.columnIds);
+		return deletedBoard;
 	} catch (error) {
 		return Promise.reject(error);
 	}

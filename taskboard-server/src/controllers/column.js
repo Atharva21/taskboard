@@ -23,3 +23,17 @@ exports.updateColumn = async (req, res) => {
 		return res.sendError(error);
 	}
 };
+
+exports.deleteColumn = async (req, res) => {
+	try {
+		const { columnId } = req.params;
+		const { boardId } = req.body;
+		const deletedColumn = await columnService.deleteColumn(
+			boardId,
+			columnId
+		);
+		return res.successData(deletedColumn);
+	} catch (error) {
+		return res.sendError(error);
+	}
+};

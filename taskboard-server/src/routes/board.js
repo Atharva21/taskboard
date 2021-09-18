@@ -22,4 +22,6 @@ router.patch(
 	boardController.updateBoard
 );
 
+router.delete("/:boardId", boardController.deleteBoard);
+
 module.exports = router;

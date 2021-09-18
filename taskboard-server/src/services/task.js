@@ -59,3 +59,24 @@ exports.deleteTaskById = async (columnId, taskId) => {
 		return Promise.reject(error);
 	}
 };
+
+exports.deleteMultipleTasks = async (taskIds) => {
+	try {
+		const result = await TaskModel.deleteMany({
+			_id: {
+				$in: taskIds,
+			},
+		});
+		if (!result) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: "taskIds not found",
+				})
+			);
+		}
+		return result;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};

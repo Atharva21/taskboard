@@ -22,4 +22,10 @@ router.patch(
 	columnController.updateColumn
 );
 
+router.delete(
+	"/:columnId",
+	validator.validatePresentInBody("boardId"),
+	columnController.deleteColumn
+);
+
 module.exports = router;

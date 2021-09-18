@@ -23,3 +23,16 @@ exports.updateBoard = async (req, res) => {
 		return res.sendError(error);
 	}
 };
+
+exports.deleteBoard = async (req, res) => {
+	try {
+		const { boardId } = req.params;
+		const deletedBoard = await boardService.deleteBoardById(
+			req.session.userId,
+			boardId
+		);
+		res.successData(deletedBoard);
+	} catch (error) {
+		return res.sendError(error);
+	}
+};
