@@ -28,7 +28,6 @@ const TaskList = styled.div`
 `;
 
 const Column = ({ tasks, column, index }) => {
-	// console.log(JSON.stringify(tasks));
 	return (
 		<Draggable draggableId={column.id} index={index}>
 			{(provided, snapshot) => (

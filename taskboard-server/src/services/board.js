@@ -117,6 +117,22 @@ exports.deleteBoardById = async (userId, boardId) => {
 	}
 };
 
+exports.getAllBoardsOfUser = async (userId) => {
+	try {
+		const boardIds = await userService.getBoardIdsByUserId(userId);
+		const boards = await BoardModel.find({
+			_id: {
+				$in: boardIds,
+			},
+		});
+		log.info(boardIds);
+		log.info(boards);
+		return boards;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
 const updateColumnIds = async (boardId, columnIds) => {
 	try {
 		const updatedBoard = await BoardModel.findByIdAndUpdate(

@@ -142,3 +142,20 @@ exports.validateBoardIdPresent = async (userId, boardId) => {
 		return Promise.reject(error);
 	}
 };
+
+exports.getBoardIdsByUserId = async (userId) => {
+	try {
+		const user = await UserModel.findById(userId);
+		if (!user) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `userId ${userId} not found`,
+				})
+			);
+		}
+		return user.boardIds;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};

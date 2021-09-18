@@ -15,6 +15,8 @@ router.post(
 	boardController.saveBoard
 );
 
+router.get("/", boardController.getAllBoards);
+
 // get board
 router.get(
 	"/:boardId",

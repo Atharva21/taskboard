@@ -37,6 +37,17 @@ exports.deleteBoard = async (req, res) => {
 	}
 };
 
+exports.getAllBoards = async (req, res) => {
+	try {
+		const boards = await boardService.getAllBoardsOfUser(
+			req.session.userId
+		);
+		return res.successData(boards);
+	} catch (error) {
+		return res.sendError(error);
+	}
+};
+
 exports.getBoard = async (req, res) => {
 	try {
 		const { boardId } = req.params;
