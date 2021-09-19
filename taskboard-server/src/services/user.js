@@ -10,15 +10,15 @@ const { USER_LIMIT } = require("../util/environment");
 // signup
 exports.saveUser = async ({ username, password, email }) => {
 	try {
-		const userCount = await UserModel.count();
-		if (userCount >= USER_LIMIT) {
-			await this.deleteFirstUser();
-		}
 		const savedUser = await UserModel.create({
 			username,
 			password: await bcrypt.hash(password, 10),
 			email,
 		});
+		const userCount = await UserModel.count();
+		if (userCount > USER_LIMIT) {
+			await this.deleteFirstUser();
+		}
 		return savedUser;
 	} catch (error) {
 		if (error.code && error.code === 11000) {
@@ -174,7 +174,7 @@ exports.deleteFirstUser = async () => {
 			{},
 			{
 				sort: {
-					createdAt: -1,
+					created_at: -1,
 				},
 			}
 		);
