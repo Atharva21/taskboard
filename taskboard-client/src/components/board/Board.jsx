@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Column from "./Column";
 
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import initialData from "./Data";
+import axios from "../../config/axios";
 
 const Container = styled.div`
 	margin-top: 4em;
@@ -15,8 +16,36 @@ const Container = styled.div`
 	user-select: none;
 `;
 
-const Board = () => {
-	const [state, setState] = useState(initialData);
+const Board = ({ match }) => {
+	const [state, setState] = useState();
+
+	useEffect(() => {
+		const fetchBoard = async () => {
+			try {
+				const result = await axios.get(`/boards/${match.params.id}`);
+				console.log(result.data.data);
+				setState(result.data.data);
+			} catch (error) {
+				console.error(error.response.data);
+			}
+		};
+		fetchBoard();
+	}, []);
+
+	const updateBoardState = async (newState) => {
+		try {
+			const result = await axios.post(
+				`/boards/${match.params.id}`,
+				newState
+			);
+			console.log("state:");
+			console.log(JSON.stringify(result.data.data));
+			setState(result.data.data);
+		} catch (error) {
+			// TODO fetch data, and set it as state from error.response.data
+			console.error(error.response.data);
+		}
+	};
 
 	const onDragEnd = (result) => {
 		const { source, destination, draggableId, type } = result;
@@ -29,13 +58,18 @@ const Board = () => {
 		}
 
 		if (type === "column") {
-			const newColumnOrder = Array.from(state.columnOrder);
-			newColumnOrder.splice(source.index, 1);
-			newColumnOrder.splice(destination.index, 0, draggableId);
-			setState({
+			const newColumnIds = Array.from(state.board.columnIds);
+			newColumnIds.splice(source.index, 1);
+			newColumnIds.splice(destination.index, 0, draggableId);
+			const newState = {
 				...state,
-				columnOrder: newColumnOrder,
-			});
+				board: {
+					...state.board,
+					columnIds: newColumnIds,
+				},
+			};
+			setState(newState);
+			updateBoardState(newState);
 			return;
 		}
 
@@ -57,11 +91,12 @@ const Board = () => {
 				...state,
 				columns: {
 					...state.columns,
-					[newColumn.id]: newColumn,
+					[newColumn._id]: newColumn,
 				},
 			};
 
 			setState(newState);
+			updateBoardState(newState);
 			return;
 		}
 
@@ -85,45 +120,48 @@ const Board = () => {
 			...state,
 			columns: {
 				...state.columns,
-				[newSourceColumn.id]: newSourceColumn,
-				[newDestinationColumn.id]: newDestinationColumn,
+				[newSourceColumn._id]: newSourceColumn,
+				[newDestinationColumn._id]: newDestinationColumn,
 			},
 		};
 		setState(newState);
+		updateBoardState(newState);
 	};
 
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
-			<Droppable
-				droppableId={state.boardId}
-				direction="horizontal"
-				type="column"
-			>
-				{(provided, snapshot) => (
-					<Container
-						{...provided.droppableProps}
-						ref={provided.innerRef}
-						// isDraggingOver={snapshot.isDraggingOver}
-					>
-						{state.columnOrder.map((colId, index) => {
-							const column = state.columns[colId];
-							const tasks = column.taskIds.map(
-								(taskId) => state.tasks[taskId]
-							);
+			{state && state.board && (
+				<Droppable
+					droppableId={state.board._id}
+					direction="horizontal"
+					type="column"
+				>
+					{(provided, snapshot) => (
+						<Container
+							{...provided.droppableProps}
+							ref={provided.innerRef}
+							// isDraggingOver={snapshot.isDraggingOver}
+						>
+							{state.board.columnIds.map((colId, index) => {
+								const column = state.columns[colId];
+								const tasks = column.taskIds.map(
+									(taskId) => state.tasks[taskId]
+								);
 
-							return (
-								<Column
-									key={column.id}
-									tasks={tasks}
-									column={column}
-									index={index}
-								/>
-							);
-						})}
-						{provided.placeholder}
-					</Container>
-				)}
-			</Droppable>
+								return (
+									<Column
+										key={column._id}
+										tasks={tasks}
+										column={column}
+										index={index}
+									/>
+								);
+							})}
+							{provided.placeholder}
+						</Container>
+					)}
+				</Droppable>
+			)}
 		</DragDropContext>
 	);
 };

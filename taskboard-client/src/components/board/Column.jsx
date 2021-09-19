@@ -29,7 +29,7 @@ const TaskList = styled.div`
 
 const Column = ({ tasks, column, index }) => {
 	return (
-		<Draggable draggableId={column.id} index={index}>
+		<Draggable draggableId={column._id} index={index}>
 			{(provided, snapshot) => (
 				<Container
 					{...provided.draggableProps}
@@ -37,7 +37,7 @@ const Column = ({ tasks, column, index }) => {
 					isDragging={snapshot.isDragging}
 				>
 					<Title {...provided.dragHandleProps}>{column.title}</Title>
-					<Droppable droppableId={column.id} type="task">
+					<Droppable droppableId={column._id} type="task">
 						{(provided, snapshot) => (
 							<TaskList
 								{...provided.droppableProps}
@@ -48,7 +48,7 @@ const Column = ({ tasks, column, index }) => {
 									return (
 										<Task
 											task={task}
-											key={task.id}
+											key={task._id}
 											index={idx}
 										></Task>
 									);
