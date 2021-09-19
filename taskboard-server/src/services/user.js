@@ -2,12 +2,18 @@ const bcrypt = require("bcryptjs");
 const { Types } = require("mongoose");
 
 const UserModel = require("../models/user");
+const boardService = require("./board");
 const APIError = require("../util/APIError");
 const log = require("../util/logger");
+const { USER_LIMIT } = require("../util/environment");
 
 // signup
 exports.saveUser = async ({ username, password, email }) => {
 	try {
+		const userCount = await UserModel.count();
+		if (userCount >= USER_LIMIT) {
+			await this.deleteFirstUser();
+		}
 		const savedUser = await UserModel.create({
 			username,
 			password: await bcrypt.hash(password, 10),
@@ -155,6 +161,28 @@ exports.getBoardIdsByUserId = async (userId) => {
 			);
 		}
 		return user.boardIds;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+exports.deleteFirstUser = async () => {
+	try {
+		// grab the oldest user to delete.
+		const firstUser = await UserModel.findOne(
+			{},
+			{},
+			{
+				sort: {
+					createdAt: -1,
+				},
+			}
+		);
+		await boardService.deleteMultipleBoards(firstUser.boardIds);
+		const deletedUser = await UserModel.findByIdAndDelete(firstUser._id, {
+			new: false,
+		});
+		return deletedUser;
 	} catch (error) {
 		return Promise.reject(error);
 	}

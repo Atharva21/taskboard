@@ -117,6 +117,24 @@ exports.deleteBoardById = async (userId, boardId) => {
 	}
 };
 
+exports.deleteMultipleBoards = async (boardIds) => {
+	try {
+		const deletedBoards = await Promise.all(
+			boardIds.map((boardId) =>
+				BoardModel.findByIdAndDelete(boardId, { new: false })
+			)
+		);
+		await Promise.all(
+			deletedBoards.map((board) =>
+				columnService.deleteMultipleColumns(board.columnIds)
+			)
+		);
+		return deletedBoards;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
 exports.getAllBoardsOfUser = async (userId) => {
 	try {
 		const boardIds = await userService.getBoardIdsByUserId(userId);

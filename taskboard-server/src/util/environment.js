@@ -12,6 +12,10 @@ module.exports = {
 	REDIS_HOST = "127.0.0.1",
 	REDIS_PORT = 6379,
 	SESSION_SECRET,
+	USER_LIMIT = 50,
+	BOARD_LIMIT = 2,
+	COLUMN_LIMIT = 5,
+	TASK_LIMIT = 10,
 } = process.env;
 
 exports.PROD = NODE_ENV === "production";
