@@ -5,9 +5,19 @@ const columnService = require("./column");
 const taskService = require("./task");
 const log = require("../util/logger");
 const { Types } = require("mongoose");
+const { BOARD_LIMIT } = require("../util/environment");
 
 exports.saveBoard = async (userId, { title }) => {
 	try {
+		const boardIds = await userService.getBoardIdsByUserId(userId);
+		if (boardIds.length >= BOARD_LIMIT) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 400,
+					description: "board limit reached",
+				})
+			);
+		}
 		const savedBoard = await BoardModel.create({
 			title,
 		});
@@ -39,6 +49,23 @@ exports.updateTitleById = async (boardId, title) => {
 			);
 		}
 		return updatedBoard;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+exports.getColumnIdsFromBoard = async (boardId) => {
+	try {
+		const board = await BoardModel.findById(boardId);
+		if (!board) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `boardId ${boardId} not found`,
+				})
+			);
+		}
+		return board.columnIds;
 	} catch (error) {
 		return Promise.reject(error);
 	}
@@ -143,8 +170,6 @@ exports.getAllBoardsOfUser = async (userId) => {
 				$in: boardIds,
 			},
 		});
-		log.info(boardIds);
-		log.info(boards);
 		return boards;
 	} catch (error) {
 		return Promise.reject(error);

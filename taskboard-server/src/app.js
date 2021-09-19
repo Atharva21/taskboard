@@ -7,6 +7,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const {
+	PORT,
 	CLIENT_DOMAIN,
 	MONGO_URL,
 	REDIS_HOST,

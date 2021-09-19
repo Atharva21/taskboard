@@ -4,9 +4,19 @@ const boardService = require("./board");
 const taskService = require("./task");
 const log = require("../util/logger");
 const { Types } = require("mongoose");
+const { COLUMN_LIMIT } = require("../util/environment");
 
 exports.saveColumn = async ({ boardId, title }) => {
 	try {
+		const columnIds = await boardService.getColumnIdsFromBoard(boardId);
+		if (columnIds.length >= COLUMN_LIMIT) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 400,
+					description: "column limit reached",
+				})
+			);
+		}
 		const savedColumn = await ColumnModel.create({
 			title,
 		});
@@ -130,6 +140,23 @@ exports.deleteMultipleColumns = async (columnIds) => {
 			)
 		);
 		return deletedColumns;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+exports.getTaskIdsFromColumn = async (columnId) => {
+	try {
+		const column = await ColumnModel.findById(columnId);
+		if (!column) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 404,
+					description: `columnId ${columnId} not found`,
+				})
+			);
+		}
+		return column.taskIds;
 	} catch (error) {
 		return Promise.reject(error);
 	}

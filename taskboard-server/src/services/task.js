@@ -1,10 +1,20 @@
 const TaskModel = require("../models/task");
 const APIError = require("../util/APIError");
 const columnService = require("./column");
+const { TASK_LIMIT } = require("../util/environment");
 const log = require("../util/logger");
 
 exports.saveTask = async ({ columnId, content }) => {
 	try {
+		const taskIds = await columnService.getTaskIdsFromColumn(columnId);
+		if (taskIds.length >= TASK_LIMIT) {
+			return Promise.reject(
+				new APIError({
+					statusCode: 400,
+					description: "task limit reached",
+				})
+			);
+		}
 		const savedTask = await TaskModel.create({
 			content,
 		});
