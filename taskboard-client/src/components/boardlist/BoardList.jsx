@@ -16,7 +16,7 @@ const StyledBoardList = styled.div`
 
 const StyledBoard = styled.div`
 	padding: 1em;
-	background-color: #ebe53b;
+	background-color: #f2b138;
 	margin-right: 1em;
 `;
 
