@@ -4,11 +4,11 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div`
-	border: 1px solid lightgrey;
+	border: 1px solid black;
 	border-radius: 5px;
 	padding: 8px;
 	margin-bottom: 8px;
-	background-color: ${(props) => (props.isDragging ? "grey" : "#222")};
+	background-color: ${(props) => (props.isDragging ? "#f5f2ab" : "white")};
 `;
 
 const Task = ({ task, index }) => {

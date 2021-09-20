@@ -18,7 +18,7 @@ const Login = () => {
 			});
 			console.log(result.data);
 			if (result.status === 200) {
-				history.push("/dashboard");
+				history.push("/");
 			}
 		} catch (error) {
 			console.log(error.response.data);

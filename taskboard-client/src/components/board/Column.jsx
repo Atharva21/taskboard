@@ -6,7 +6,7 @@ import Task from "./Task";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div`
-	background-color: #222;
+	background-color: white;
 	margin: 8px;
 	border: 1px solid lightgrey;
 	border-radius: 5px;
@@ -22,7 +22,7 @@ const TaskList = styled.div`
 	padding: 8px;
 	transition: background-color 0.2s ease;
 	background-color: ${(props) =>
-		props.isDraggingOver ? "lightgrey" : "inherit"};
+		props.isDraggingOver ? "#ebe53b;" : "inherit"};
 	flex-grow: 1;
 	min-height: 100px;
 `;

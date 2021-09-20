@@ -1,8 +1,26 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "../../config/axios";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
-const DashBoard = () => {
+const Container = styled.div`
+	margin-top: 4em;
+	user-select: none;
+`;
+
+const StyledBoardList = styled.div`
+	padding: 1em;
+	display: flex;
+	align-items: flex-start;
+`;
+
+const StyledBoard = styled.div`
+	padding: 1em;
+	background-color: #ebe53b;
+	margin-right: 1em;
+`;
+
+const BoardList = () => {
 	const inputRef = useRef();
 	const [boards, setBoards] = useState();
 	const history = useHistory();
@@ -16,8 +34,13 @@ const DashBoard = () => {
 			const result = await axios.get("/boards");
 			setBoards(result.data.data);
 		} catch (error) {
-			// TODO if 401/403, redirect to login.
 			console.error(error.response.data);
+			if (
+				error.response.status === 401 ||
+				error.response.status === 403
+			) {
+				history.push("/login");
+			}
 		}
 	};
 
@@ -39,19 +62,22 @@ const DashBoard = () => {
 	};
 
 	return (
-		<div>
-			{boards &&
-				boards.boards.map((board) => {
-					return (
-						<h1
-							key={board._id}
-							style={{ border: "1px solid blue" }}
-							onClick={() => onBoardClicked(board._id)}
-						>
-							{board.title}
-						</h1>
-					);
-				})}
+		<Container>
+			{boards && (
+				<StyledBoardList>
+					{boards.boards.map((board) => {
+						return (
+							<StyledBoard
+								key={board._id}
+								style={{ border: "1px solid blue" }}
+								onClick={() => onBoardClicked(board._id)}
+							>
+								{board.title}
+							</StyledBoard>
+						);
+					})}
+				</StyledBoardList>
+			)}
 			{boards && !boards.maxBoards && (
 				<div>
 					<input
@@ -62,8 +88,8 @@ const DashBoard = () => {
 					<button onClick={addBoardHandler}>Add</button>
 				</div>
 			)}
-		</div>
+		</Container>
 	);
 };
 
-export default DashBoard;
+export default BoardList;
