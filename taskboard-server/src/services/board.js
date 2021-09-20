@@ -5,7 +5,11 @@ const columnService = require("./column");
 const taskService = require("./task");
 const log = require("../util/logger");
 const { Types } = require("mongoose");
-const { BOARD_LIMIT } = require("../util/environment");
+const {
+	BOARD_LIMIT,
+	COLUMN_LIMIT,
+	TASK_LIMIT,
+} = require("../util/environment");
 
 exports.saveBoard = async (userId, { title }) => {
 	try {
@@ -170,7 +174,7 @@ exports.getAllBoardsOfUser = async (userId) => {
 				$in: boardIds,
 			},
 		});
-		return boards;
+		return { maxBoards: boards.length >= BOARD_LIMIT, boards };
 	} catch (error) {
 		return Promise.reject(error);
 	}
@@ -223,7 +227,9 @@ exports.getFullBoard = async (boardId) => {
 
 		const columnObject = {};
 		columns.forEach((column) => {
-			columnObject[column._id] = column;
+			const newColumn = { ...column.toObject() };
+			newColumn.maxTasks = newColumn.taskIds.length >= TASK_LIMIT;
+			columnObject[column._id] = newColumn;
 		});
 
 		const taskObject = {};
@@ -232,7 +238,10 @@ exports.getFullBoard = async (boardId) => {
 		});
 
 		return {
-			board,
+			board: {
+				...board.toObject(),
+				maxColumns: columns.length >= COLUMN_LIMIT,
+			},
 			columns: columnObject,
 			tasks: taskObject,
 		};
