@@ -260,6 +260,13 @@ exports.updateState = async (boardId, { board, columns }) => {
 		});
 
 		if (board && board.columnIds) {
+			if (board.columnIds.length > COLUMN_LIMIT) {
+				throw new APIError({
+					statusCode: 400,
+					description: "board full",
+				});
+			}
+
 			// validate columnIds are same.
 			if (
 				JSON.stringify([...oldColumnIds].sort()) !==
@@ -267,6 +274,7 @@ exports.updateState = async (boardId, { board, columns }) => {
 			) {
 				throw new APIError({
 					statusCode: 400,
+					description: "columnIds do not match",
 				});
 			}
 			await updateColumnIds(boardId, board.columnIds);
@@ -278,6 +286,13 @@ exports.updateState = async (boardId, { board, columns }) => {
 				if (!column.taskIds) {
 					throw new APIError({
 						statusCode: 400,
+						description: "taskIds not present",
+					});
+				}
+				if (column.taskIds.length > TASK_LIMIT) {
+					throw new APIError({
+						statusCode: 400,
+						description: "Column full",
 					});
 				}
 				newTaskIds = newTaskIds.concat(column.taskIds);
@@ -289,6 +304,7 @@ exports.updateState = async (boardId, { board, columns }) => {
 			) {
 				throw new APIError({
 					statusCode: 400,
+					description: "taskIds do not match",
 				});
 			}
 
@@ -301,6 +317,15 @@ exports.updateState = async (boardId, { board, columns }) => {
 		return await this.getFullBoard(boardId);
 	} catch (error) {
 		// even if update fails, client should get the actual state.
+		if (error instanceof APIError) {
+			return Promise.reject(
+				new APIError({
+					statusCode: error.statusCode,
+					data: await this.getFullBoard(boardId),
+					description: error.description,
+				})
+			);
+		}
 		return Promise.reject(
 			new APIError({
 				statusCode: 400,

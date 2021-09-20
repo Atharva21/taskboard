@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import styled from "styled-components";
 import Task from "./Task";
@@ -27,7 +27,14 @@ const TaskList = styled.div`
 	min-height: 100px;
 `;
 
-const Column = ({ tasks, column, index }) => {
+const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
+	const contentRef = useRef();
+
+	const taskAddHandler = () => {
+		const content = contentRef.current.value;
+		onTaskAdd(content, column._id);
+	};
+
 	return (
 		<Draggable draggableId={column._id} index={index}>
 			{(provided, snapshot) => (
@@ -54,6 +61,19 @@ const Column = ({ tasks, column, index }) => {
 									);
 								})}
 								{provided.placeholder}
+								{!maxTasks && (
+									<div>
+										<div>
+											<input
+												type="text"
+												ref={contentRef}
+											/>
+										</div>
+										<button onClick={taskAddHandler}>
+											Add task
+										</button>
+									</div>
+								)}
 							</TaskList>
 						)}
 					</Droppable>

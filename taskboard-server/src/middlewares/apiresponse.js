@@ -24,6 +24,7 @@ module.exports = apiresponse = (_, res, next) => {
 				return res.status(error.statusCode).json({
 					success: false,
 					data: error.data,
+					message: error.description,
 				});
 			}
 

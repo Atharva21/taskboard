@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Column from "./Column";
 
 import styled from "styled-components";
@@ -18,19 +18,20 @@ const Container = styled.div`
 
 const Board = ({ match }) => {
 	const [state, setState] = useState();
+	const newColumnRef = useRef();
 
 	useEffect(() => {
-		const fetchBoard = async () => {
-			try {
-				const result = await axios.get(`/boards/${match.params.id}`);
-				console.log(result.data.data);
-				setState(result.data.data);
-			} catch (error) {
-				console.error(error.response.data);
-			}
-		};
 		fetchBoard();
 	}, []);
+
+	const fetchBoard = async () => {
+		try {
+			const result = await axios.get(`/boards/${match.params.id}`);
+			setState(result.data.data);
+		} catch (error) {
+			console.error(error.response.data);
+		}
+	};
 
 	const updateBoardState = async (newState) => {
 		try {
@@ -38,12 +39,11 @@ const Board = ({ match }) => {
 				`/boards/${match.params.id}`,
 				newState
 			);
-			console.log("state:");
-			console.log(JSON.stringify(result.data.data));
 			setState(result.data.data);
 		} catch (error) {
-			// TODO fetch data, and set it as state from error.response.data
+			// TODO show response.message as error
 			console.error(error.response.data);
+			setState(error.response.data.data);
 		}
 	};
 
@@ -128,6 +128,31 @@ const Board = ({ match }) => {
 		updateBoardState(newState);
 	};
 
+	const onColumnAdd = async () => {
+		try {
+			const title = newColumnRef.current.value;
+			await axios.post("/columns", {
+				boardId: match.params.id,
+				title,
+			});
+			fetchBoard();
+		} catch (error) {
+			console.error(error.response.data);
+		}
+	};
+
+	const onTaskAdd = async (content, columnId) => {
+		try {
+			await axios.post("/tasks", {
+				content,
+				columnId,
+			});
+			fetchBoard();
+		} catch (error) {
+			console.error(error.response.data);
+		}
+	};
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			{state && state.board && (
@@ -154,10 +179,22 @@ const Board = ({ match }) => {
 										tasks={tasks}
 										column={column}
 										index={index}
+										maxTasks={column.maxTasks}
+										onTaskAdd={onTaskAdd}
 									/>
 								);
 							})}
 							{provided.placeholder}
+							{state && state.board && !state.board.maxColumns && (
+								<div>
+									<div>
+										<input type="text" ref={newColumnRef} />
+									</div>
+									<button onClick={onColumnAdd}>
+										Add column
+									</button>
+								</div>
+							)}
 						</Container>
 					)}
 				</Droppable>
