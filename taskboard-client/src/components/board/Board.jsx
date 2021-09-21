@@ -5,7 +5,6 @@ import styled from "styled-components";
 
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-import initialData from "./Data";
 import axios from "../../config/axios";
 
 const Container = styled.div`

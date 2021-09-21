@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 
 import styled from "styled-components";
 import Task from "./Task";
+import AddButton from "../ui/AddButton";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
@@ -22,7 +23,7 @@ const TaskList = styled.div`
 	padding: 8px;
 	transition: background-color 0.2s ease;
 	background-color: ${(props) =>
-		props.isDraggingOver ? "#f2b138" : "inherit"};
+		props.isDraggingOver ? "#f2d338" : "inherit"};
 	flex-grow: 1;
 	min-height: 100px;
 `;
@@ -71,9 +72,9 @@ const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
 												ref={contentRef}
 											/>
 										</div>
-										<button onClick={taskAddHandler}>
-											Add task
-										</button>
+										<AddButton
+											onClick={taskAddHandler}
+										></AddButton>
 									</div>
 								)}
 							</TaskList>

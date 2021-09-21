@@ -10,8 +10,12 @@ const Container = styled.div`
 	justify-content: center;
 	padding: 0.5em;
 	margin-bottom: 8px;
-	background-color: ${(props) => (props.isDragging ? "#f2d338" : "white")};
+	background-color: ${(props) => (props.isDragging ? "#f2b138" : "white")};
 	word-break: break-word;
+
+	&:hover {
+		background-color: lightyellow;
+	}
 `;
 
 const Content = styled.div`
