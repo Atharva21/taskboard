@@ -11,6 +11,7 @@ const Container = styled.div`
 	padding: 0.5em;
 	margin-bottom: 8px;
 	background-color: ${(props) => (props.isDragging ? "#f2d338" : "white")};
+	word-break: break-word;
 `;
 
 const Content = styled.div`
