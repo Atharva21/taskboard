@@ -131,6 +131,7 @@ const Board = ({ match }) => {
 	const onColumnAdd = async () => {
 		try {
 			const title = newColumnRef.current.value;
+			newColumnRef.current.value = "";
 			await axios.post("/columns", {
 				boardId: match.params.id,
 				title,
@@ -188,7 +189,11 @@ const Board = ({ match }) => {
 							{state && state.board && !state.board.maxColumns && (
 								<div>
 									<div>
-										<input type="text" ref={newColumnRef} />
+										<input
+											type="text"
+											spellCheck="false"
+											ref={newColumnRef}
+										/>
 									</div>
 									<button onClick={onColumnAdd}>
 										Add column

@@ -82,6 +82,7 @@ const BoardList = () => {
 				<div>
 					<input
 						type="text"
+						spellCheck="false"
 						placeholder="board title"
 						ref={inputRef}
 					/>

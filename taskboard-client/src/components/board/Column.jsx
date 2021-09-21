@@ -9,7 +9,7 @@ const Container = styled.div`
 	background-color: white;
 	margin: 8px;
 	border: 2px solid #f0c90a;
-	border-radius: 5px;
+	border-radius: 10px;
 	width: 220px;
 	text-align: center;
 	display: flex;
@@ -32,6 +32,7 @@ const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
 
 	const taskAddHandler = () => {
 		const content = contentRef.current.value;
+		contentRef.current.value = "";
 		onTaskAdd(content, column._id);
 	};
 
@@ -66,6 +67,7 @@ const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
 										<div>
 											<input
 												type="text"
+												spellCheck="false"
 												ref={contentRef}
 											/>
 										</div>

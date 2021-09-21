@@ -6,9 +6,16 @@ import { Draggable } from "react-beautiful-dnd";
 const Container = styled.div`
 	border: 1px solid black;
 	border-radius: 5px;
-	padding: 8px;
+	display: flex;
+	justify-content: center;
+	padding: 0.5em;
 	margin-bottom: 8px;
 	background-color: ${(props) => (props.isDragging ? "#f2d338" : "white")};
+`;
+
+const Content = styled.div`
+	min-height: 20px;
+	flex-grow: 1;
 `;
 
 const Task = ({ task, index }) => {
@@ -22,7 +29,7 @@ const Task = ({ task, index }) => {
 						ref={provided.innerRef}
 						isDragging={snapshot.isDragging}
 					>
-						{task.content}
+						<Content>{task.content}</Content>
 					</Container>
 				);
 			}}
