@@ -46,6 +46,54 @@ const Board = ({ match }) => {
 		}
 	};
 
+	const onTaskEdit = async (taskId, content) => {
+		try {
+			await axios.patch(`/tasks/${taskId}`, {
+				content,
+			});
+			setState((prev) => {
+				return {
+					...prev,
+					tasks: {
+						...prev.tasks,
+						[taskId]: {
+							...prev.tasks[taskId],
+							content,
+						},
+					},
+				};
+			});
+		} catch (error) {
+			// TODO
+			console.log(error.response.data);
+			fetchBoard();
+		}
+	};
+
+	const onColumnEdit = async (columnId, title) => {
+		try {
+			await axios.patch(`/columns/${columnId}`, {
+				title,
+			});
+			setState((prev) => {
+				return {
+					...prev,
+					columns: {
+						...prev.columns,
+						[columnId]: {
+							...prev.columns[columnId],
+							title,
+						},
+					},
+				};
+			});
+		} catch (error) {
+			// TODO
+			console.log(error.response.data);
+			fetchBoard();
+		}
+	};
+
 	const onDragEnd = (result) => {
 		const { source, destination, draggableId, type } = result;
 		if (!destination) return;
@@ -181,6 +229,8 @@ const Board = ({ match }) => {
 										index={index}
 										maxTasks={column.maxTasks}
 										onTaskAdd={onTaskAdd}
+										onColumnEdit={onColumnEdit}
+										onTaskEdit={onTaskEdit}
 									/>
 								);
 							})}

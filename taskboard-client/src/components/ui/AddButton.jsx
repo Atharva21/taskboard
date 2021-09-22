@@ -5,10 +5,10 @@ const Button = styled.button`
 	padding: 0.5rem;
 	background-color: white;
 	border-radius: 50%;
-	border: 2px solid #f0c90a;
+	border: 2px solid grey;
 
 	&:hover {
-		border-color: black;
+		border-color: darkorange;
 	}
 `;
 

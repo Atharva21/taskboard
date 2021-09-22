@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div`
 	border: 1px solid black;
-	border-radius: 5px;
+	border-radius: 0.5em;
 	display: flex;
 	justify-content: center;
-	padding: 0.5em;
 	margin-bottom: 8px;
 	background-color: ${(props) => (props.isDragging ? "#f2b138" : "white")};
 	word-break: break-word;
@@ -19,11 +18,41 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
+	padding: 0.5em;
 	min-height: 20px;
 	flex-grow: 1;
 `;
 
-const Task = ({ task, index }) => {
+const Task = ({ task, index, onTaskEdit }) => {
+	const [isEditing, setEditing] = useState(false);
+	const contentRef = useRef();
+
+	const clickHandler = () => {
+		if (!isEditing) toggleEditable();
+		setTimeout(() => {
+			contentRef.current.focus();
+		}, 0);
+	};
+
+	const onBlurHandler = () => {
+		if (isEditing) toggleEditable();
+		setTimeout(() => {
+			contentRef.current.blur();
+		}, 0);
+
+		if (
+			contentRef.current.innerHTML &&
+			task.content !== contentRef.current.innerHTML &&
+			contentRef.current.innerHTML.length > 0
+		) {
+			onTaskEdit(task._id, contentRef.current.innerHTML);
+		}
+	};
+
+	const toggleEditable = () => {
+		setEditing((prev) => !prev);
+	};
+
 	return (
 		<Draggable draggableId={task._id} index={index}>
 			{(provided, snapshot) => {
@@ -33,8 +62,26 @@ const Task = ({ task, index }) => {
 						{...provided.dragHandleProps}
 						ref={provided.innerRef}
 						isDragging={snapshot.isDragging}
+						onDoubleClick={clickHandler}
+						onBlur={onBlurHandler}
 					>
-						<Content>{task.content}</Content>
+						<Content
+							spellCheck="false"
+							contentEditable={isEditing ? "true" : "false"}
+							suppressContentEditableWarning={true}
+							style={
+								isEditing
+									? {
+											cursor: "text",
+									  }
+									: {
+											cursor: "inherit",
+									  }
+							}
+							ref={contentRef}
+						>
+							{task.content}
+						</Content>
 					</Container>
 				);
 			}}

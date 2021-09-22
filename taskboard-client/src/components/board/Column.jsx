@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import styled from "styled-components";
 import Task from "./Task";
@@ -7,14 +7,15 @@ import AddButton from "../ui/AddButton";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div`
-	background-color: white;
+	background-color: ${(props) => (props.isDragging ? "#f2d338" : "inherit")};
 	margin: 8px;
 	border: 2px solid #f0c90a;
-	border-radius: 10px;
+	border-radius: 1.3em;
 	width: 220px;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
+	overflow: hidden;
 `;
 const Title = styled.h3`
 	padding: 8px;
@@ -28,12 +29,49 @@ const TaskList = styled.div`
 	min-height: 100px;
 `;
 
-const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
-	const contentRef = useRef();
+const Column = ({
+	tasks,
+	column,
+	index,
+	onTaskAdd,
+	maxTasks,
+	onColumnEdit,
+	onTaskEdit,
+}) => {
+	const taskContentRef = useRef();
+	const titleRef = useRef();
+
+	const [isEditing, setEditing] = useState(false);
+
+	const toggleEditable = () => {
+		setEditing((prev) => !prev);
+	};
+
+	const clickHandler = () => {
+		if (!isEditing) toggleEditable();
+		setTimeout(() => {
+			titleRef.current.focus();
+		}, 0);
+	};
+
+	const onBlurHandler = () => {
+		if (isEditing) toggleEditable();
+		setTimeout(() => {
+			titleRef.current.blur();
+		}, 0);
+
+		if (
+			titleRef.current.innerHTML &&
+			column.title !== titleRef.current.innerHTML &&
+			titleRef.current.innerHTML.length > 0
+		) {
+			onColumnEdit(column._id, titleRef.current.innerHTML);
+		}
+	};
 
 	const taskAddHandler = () => {
-		const content = contentRef.current.value;
-		contentRef.current.value = "";
+		const content = taskContentRef.current.value;
+		taskContentRef.current.value = "";
 		onTaskAdd(content, column._id);
 	};
 
@@ -45,7 +83,27 @@ const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
 					ref={provided.innerRef}
 					isDragging={snapshot.isDragging}
 				>
-					<Title {...provided.dragHandleProps}>{column.title}</Title>
+					<Title
+						{...provided.dragHandleProps}
+						ref={titleRef}
+						onDoubleClick={clickHandler}
+						onBlur={onBlurHandler}
+						spellCheck="false"
+						contentEditable={isEditing ? "true" : "false"}
+						suppressContentEditableWarning={true}
+						style={
+							isEditing
+								? {
+										cursor: "text",
+								  }
+								: {
+										cursor: "inherit",
+								  }
+						}
+						ref={titleRef}
+					>
+						{column.title}
+					</Title>
 					<Droppable droppableId={column._id} type="task">
 						{(provided, snapshot) => (
 							<TaskList
@@ -59,6 +117,7 @@ const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
 											task={task}
 											key={task._id}
 											index={idx}
+											onTaskEdit={onTaskEdit}
 										></Task>
 									);
 								})}
@@ -69,7 +128,7 @@ const Column = ({ tasks, column, index, onTaskAdd, maxTasks }) => {
 											<input
 												type="text"
 												spellCheck="false"
-												ref={contentRef}
+												ref={taskContentRef}
 											/>
 										</div>
 										<AddButton
