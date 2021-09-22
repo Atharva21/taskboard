@@ -18,6 +18,7 @@ const Container = styled.div`
 	overflow: hidden;
 `;
 const Title = styled.h3`
+	border-radius: 0.7em;
 	padding: 8px;
 `;
 const TaskList = styled.div`
@@ -65,7 +66,9 @@ const Column = ({
 			column.title !== titleRef.current.innerHTML &&
 			titleRef.current.innerHTML.length > 0
 		) {
-			onColumnEdit(column._id, titleRef.current.innerHTML);
+			const newTitle = titleRef.current.innerHTML;
+			titleRef.current.innerHTML = column.title;
+			onColumnEdit(column._id, newTitle);
 		}
 	};
 
@@ -95,6 +98,7 @@ const Column = ({
 							isEditing
 								? {
 										cursor: "text",
+										backgroundColor: "lightyellow",
 								  }
 								: {
 										cursor: "inherit",

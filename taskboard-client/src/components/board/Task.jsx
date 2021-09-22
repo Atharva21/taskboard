@@ -45,7 +45,9 @@ const Task = ({ task, index, onTaskEdit }) => {
 			task.content !== contentRef.current.innerHTML &&
 			contentRef.current.innerHTML.length > 0
 		) {
-			onTaskEdit(task._id, contentRef.current.innerHTML);
+			const newContent = contentRef.current.innerHTML;
+			contentRef.current.innerHTML = task.content;
+			onTaskEdit(task._id, newContent);
 		}
 	};
 

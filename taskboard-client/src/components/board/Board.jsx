@@ -66,7 +66,7 @@ const Board = ({ match }) => {
 		} catch (error) {
 			// TODO
 			console.log(error.response.data);
-			fetchBoard();
+			setState({ ...state });
 		}
 	};
 
@@ -90,7 +90,7 @@ const Board = ({ match }) => {
 		} catch (error) {
 			// TODO
 			console.log(error.response.data);
-			fetchBoard();
+			setState({ ...state });
 		}
 	};
 
