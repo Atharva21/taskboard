@@ -45,7 +45,6 @@ const BoardList = () => {
 	};
 
 	const onBoardClicked = (boardId) => {
-		console.log(boardId);
 		history.push(`/board/${boardId}`);
 	};
 

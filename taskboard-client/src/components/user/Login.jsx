@@ -10,8 +10,6 @@ const Login = () => {
 
 	const clickHandler = async () => {
 		try {
-			console.log(username.current.value);
-			console.log(password.current.value);
 			const result = await axios.post("/users/login", {
 				username: username.current.value,
 				password: password.current.value,

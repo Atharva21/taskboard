@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
+import TaskComponent from "../ui/TaskComponent";
 
 import styled from "styled-components";
 import Task from "./Task";
-import AddButton from "../ui/AddButton";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
@@ -72,10 +72,8 @@ const Column = ({
 		}
 	};
 
-	const taskAddHandler = () => {
-		const content = taskContentRef.current.value;
-		taskContentRef.current.value = "";
-		onTaskAdd(content, column._id);
+	const taskEditHandler = (newContent) => {
+		onTaskAdd(newContent, column._id);
 	};
 
 	return (
@@ -128,16 +126,10 @@ const Column = ({
 								{provided.placeholder}
 								{!maxTasks && (
 									<div>
-										<div>
-											<input
-												type="text"
-												spellCheck="false"
-												ref={taskContentRef}
-											/>
-										</div>
-										<AddButton
-											onClick={taskAddHandler}
-										></AddButton>
+										<TaskComponent
+											content={""}
+											taskEditHandler={taskEditHandler}
+										></TaskComponent>
 									</div>
 								)}
 							</TaskList>
