@@ -39,7 +39,6 @@ const Column = ({
 	onColumnEdit,
 	onTaskEdit,
 }) => {
-	const taskContentRef = useRef();
 	const titleRef = useRef();
 
 	const [isEditing, setEditing] = useState(false);
@@ -127,7 +126,7 @@ const Column = ({
 								{!maxTasks && (
 									<div>
 										<TaskComponent
-											content={""}
+											content=""
 											taskEditHandler={taskEditHandler}
 										></TaskComponent>
 									</div>

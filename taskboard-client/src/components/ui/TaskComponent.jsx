@@ -33,6 +33,12 @@ const TaskComponent = (props) => {
 		}, 0);
 	};
 
+	const keyDownHandler = (e) => {
+		if (e.key === "Enter") {
+			contentRef.current.blur();
+		}
+	};
+
 	const onBlurHandler = () => {
 		if (isEditing) toggleEditable();
 		setTimeout(() => {
@@ -41,7 +47,6 @@ const TaskComponent = (props) => {
 
 		if (
 			contentRef.current.innerHTML &&
-			props.content !== contentRef.current.innerHTML &&
 			contentRef.current.innerHTML.length > 0
 		) {
 			const newContent = contentRef.current.innerHTML;
@@ -65,6 +70,7 @@ const TaskComponent = (props) => {
 				spellCheck="false"
 				contentEditable={isEditing ? "true" : "false"}
 				suppressContentEditableWarning={true}
+				onKeyDown={keyDownHandler}
 				style={
 					isEditing
 						? {
