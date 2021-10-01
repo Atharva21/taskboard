@@ -28,7 +28,8 @@ const DeleteButton = styled.button`
 	position: relative;
 	top: 0;
 	right: 0;
-	display: ${(props) => (props.isHovering ? "block" : "none")};
+	display: ${(props) =>
+		props.disableDelete ? "none" : props.isHovering ? "block" : "none"};
 
 	&:hover {
 		cursor: pointer;
@@ -38,7 +39,7 @@ const DeleteButton = styled.button`
 const TaskComponent = (props) => {
 	const [isEditing, setEditing] = useState(false);
 	const contentRef = useRef();
-	const [hovering, hoverProps] = useHover();
+	const [hovering, hoverProps] = useHover({ mouseEnterDelayMS: 300 });
 
 	const clickHandler = () => {
 		if (!isEditing) toggleEditable();
@@ -99,7 +100,11 @@ const TaskComponent = (props) => {
 			>
 				{props.content}
 			</Content>
-			<DeleteButton isHovering={hovering} onClick={props.deleteHandler}>
+			<DeleteButton
+				disableDelete={props.disableDelete}
+				isHovering={hovering}
+				onClick={props.deleteHandler}
+			>
 				X
 			</DeleteButton>
 			{props.children}

@@ -63,7 +63,7 @@ exports.deleteTaskById = async (columnId, taskId) => {
 				})
 			);
 		}
-		await columnService.removeTaskIdFrom(columnId, taskId);
+		await columnService.removeTaskIdFromColumn(columnId, taskId);
 		return deletedTask;
 	} catch (error) {
 		return Promise.reject(error);

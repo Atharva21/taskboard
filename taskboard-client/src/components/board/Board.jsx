@@ -199,11 +199,32 @@ const Board = ({ match }) => {
 		}
 	};
 
+	// console.log(JSON.stringify(state, null, 3));
+
 	const onTaskDelete = async (taskId, columnId) => {
 		try {
-			console.log(taskId, columnId);
-			await axios.delete(`/tasks/${taskId}`, { data: { columnId } });
-			// await fetchBoard();
+			const result = await axios.delete(`/tasks/${taskId}`, {
+				data: { columnId },
+			});
+			if (result.status === 200) {
+				const newState = { ...state };
+				const newColumn = newState.columns[columnId];
+				newColumn.taskIds = newColumn.taskIds.filter(
+					(tskId) => tskId !== taskId
+				);
+				const newTasks = {};
+				Object.entries(newState.tasks).forEach(([key, value]) => {
+					if (key !== taskId) {
+						newTasks[key] = value;
+					}
+				});
+				newState.tasks = newTasks;
+				newState.columns = {
+					...state.columns,
+					[newColumn._id]: newColumn,
+				};
+				setState(newState);
+			}
 		} catch (error) {
 			console.error(error.response.data);
 		}

@@ -79,7 +79,7 @@ exports.addTaskIdToColumn = async (columnId, taskId) => {
 	}
 };
 
-exports.removeTaskIdFrom = async (columnId, taskId) => {
+exports.removeTaskIdFromColumn = async (columnId, taskId) => {
 	try {
 		const updatedColumn = await ColumnModel.findByIdAndUpdate(
 			columnId,
@@ -92,6 +92,7 @@ exports.removeTaskIdFrom = async (columnId, taskId) => {
 				new: true,
 			}
 		);
+		log.info(JSON.stringify(updatedColumn));
 		if (!updatedColumn) {
 			return Promise.reject(
 				new APIError({

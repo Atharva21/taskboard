@@ -69,6 +69,7 @@ const Column = ({
 									<TaskComponent
 										content=""
 										taskEditHandler={taskEditHandler}
+										disableDelete
 									></TaskComponent>
 								)}
 							</TaskList>

@@ -3,7 +3,9 @@ import TaskComponent from "../ui/TaskComponent";
 import { Draggable } from "react-beautiful-dnd";
 
 const Task = ({ task, index, onTaskEdit, onDelete }) => {
-	const onEdit = (newContent) => onTaskEdit(task._id, newContent);
+	const onEdit = (newContent) => {
+		onTaskEdit(task._id, newContent);
+	};
 
 	return (
 		<Draggable draggableId={task._id} index={index}>
@@ -16,7 +18,10 @@ const Task = ({ task, index, onTaskEdit, onDelete }) => {
 						{...provided.draggableProps}
 						{...provided.dragHandleProps}
 						isDragging={snapshot.isDragging}
-						deleteHandler={() => onDelete(task._id)}
+						deleteHandler={(e) => {
+							e.preventDefault();
+							onDelete(task._id);
+						}}
 					></TaskComponent>
 				);
 			}}
