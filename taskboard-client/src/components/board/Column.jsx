@@ -23,6 +23,7 @@ const Column = ({
 	maxTasks,
 	onColumnEdit,
 	onTaskEdit,
+	onTaskDelete,
 }) => {
 	const taskEditHandler = (newContent) => {
 		onTaskAdd(newContent, column._id);
@@ -57,6 +58,9 @@ const Column = ({
 											key={task._id}
 											index={idx}
 											onTaskEdit={onTaskEdit}
+											onDelete={(taskId) =>
+												onTaskDelete(taskId, column._id)
+											}
 										></Task>
 									);
 								})}

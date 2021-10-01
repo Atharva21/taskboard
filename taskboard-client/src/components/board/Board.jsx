@@ -199,6 +199,16 @@ const Board = ({ match }) => {
 		}
 	};
 
+	const onTaskDelete = async (taskId, columnId) => {
+		try {
+			console.log(taskId, columnId);
+			await axios.delete(`/tasks/${taskId}`, { data: { columnId } });
+			// await fetchBoard();
+		} catch (error) {
+			console.error(error.response.data);
+		}
+	};
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			{state && state.board && (
@@ -229,6 +239,7 @@ const Board = ({ match }) => {
 										onTaskAdd={onTaskAdd}
 										onColumnEdit={onColumnEdit}
 										onTaskEdit={onTaskEdit}
+										onTaskDelete={onTaskDelete}
 									/>
 								);
 							})}

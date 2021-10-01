@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-
+import useHover from "react-use-hover";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -22,9 +22,23 @@ const Content = styled.div`
 	flex-grow: 1;
 `;
 
+const DeleteButton = styled.button`
+	color: red;
+	font-weight: 900;
+	position: relative;
+	top: 0;
+	right: 0;
+	display: ${(props) => (props.isHovering ? "block" : "none")};
+
+	&:hover {
+		cursor: pointer;
+	}
+`;
+
 const TaskComponent = (props) => {
 	const [isEditing, setEditing] = useState(false);
 	const contentRef = useRef();
+	const [hovering, hoverProps] = useHover();
 
 	const clickHandler = () => {
 		if (!isEditing) toggleEditable();
@@ -65,6 +79,7 @@ const TaskComponent = (props) => {
 			ref={props.innerRef}
 			onDoubleClick={clickHandler}
 			onBlur={onBlurHandler}
+			{...hoverProps}
 		>
 			<Content
 				spellCheck="false"
@@ -84,6 +99,10 @@ const TaskComponent = (props) => {
 			>
 				{props.content}
 			</Content>
+			<DeleteButton isHovering={hovering} onClick={props.deleteHandler}>
+				X
+			</DeleteButton>
+			{props.children}
 		</Container>
 	);
 };

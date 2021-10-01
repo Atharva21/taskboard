@@ -64,7 +64,6 @@ app.use(
 );
 
 app.use(apiresponse);
-
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/boards", boardRoutes);
 app.use("/api/v1/columns", columnRoutes);
