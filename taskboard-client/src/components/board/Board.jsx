@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Column from "./Column";
 
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import axios from "../../config/axios";
+import ColumnComponent from "../ui/ColumnComponent";
 
 const Container = styled.div`
 	margin-top: 4em;
@@ -17,7 +18,6 @@ const Container = styled.div`
 
 const Board = ({ match }) => {
 	const [state, setState] = useState();
-	const newColumnRef = useRef();
 
 	useEffect(() => {
 		fetchBoard();
@@ -175,10 +175,8 @@ const Board = ({ match }) => {
 		updateBoardState(newState);
 	};
 
-	const onColumnAdd = async () => {
+	const onColumnAdd = async (title) => {
 		try {
-			const title = newColumnRef.current.value;
-			newColumnRef.current.value = "";
 			await axios.post("/columns", {
 				boardId: match.params.id,
 				title,
@@ -235,20 +233,14 @@ const Board = ({ match }) => {
 								);
 							})}
 							{provided.placeholder}
-							{state && state.board && !state.board.maxColumns && (
-								<div>
-									<div>
-										<input
-											type="text"
-											spellCheck="false"
-											ref={newColumnRef}
-										/>
-									</div>
-									<button onClick={onColumnAdd}>
-										Add column
-									</button>
-								</div>
-							)}
+							{state &&
+								state.board &&
+								!state.board.maxColumns && (
+									<ColumnComponent
+										title=""
+										titleEditHandler={onColumnAdd}
+									></ColumnComponent>
+								)}
 						</Container>
 					)}
 				</Droppable>
