@@ -16,6 +16,12 @@ const Container = styled.div`
 	user-select: none;
 `;
 
+const TitleContainer = styled.div`
+	display: grid;
+	place-items: center;
+	background-color: #f2d338;
+`;
+
 const Board = ({ match }) => {
 	const [state, setState] = useState();
 
@@ -258,57 +264,62 @@ const Board = ({ match }) => {
 	};
 
 	return (
-		<DragDropContext onDragEnd={onDragEnd}>
-			{state && state.board && (
-				<Droppable
-					droppableId={state.board._id}
-					direction="horizontal"
-					type="column"
-				>
-					{(provided, snapshot) => (
-						<Container
-							{...provided.droppableProps}
-							ref={provided.innerRef}
-							// isDraggingOver={snapshot.isDraggingOver}
-						>
-							{state.board.columnIds.map((colId, index) => {
-								const column = state.columns[colId];
-								if (column && column._id) {
-									const tasks = column.taskIds.map(
-										(taskId) => state.tasks[taskId]
-									);
+		<div>
+			<TitleContainer>
+				<h1>{state?.board?.title}</h1>
+			</TitleContainer>
+			<DragDropContext onDragEnd={onDragEnd}>
+				{state && state.board && (
+					<Droppable
+						droppableId={state.board._id}
+						direction="horizontal"
+						type="column"
+					>
+						{(provided, snapshot) => (
+							<Container
+								{...provided.droppableProps}
+								ref={provided.innerRef}
+								// isDraggingOver={snapshot.isDraggingOver}
+							>
+								{state.board.columnIds.map((colId, index) => {
+									const column = state.columns[colId];
+									if (column && column._id) {
+										const tasks = column.taskIds.map(
+											(taskId) => state.tasks[taskId]
+										);
 
-									return (
-										<Column
-											key={column._id}
-											tasks={tasks}
-											column={column}
-											index={index}
-											maxTasks={column.maxTasks}
-											onTaskAdd={onTaskAdd}
-											onColumnEdit={onColumnEdit}
-											onTaskEdit={onTaskEdit}
-											onTaskDelete={onTaskDelete}
-											deleteHandler={onColumnDelete}
-										/>
-									);
-								}
-							})}
-							{provided.placeholder}
-							{state &&
-								state.board &&
-								!state.board.maxColumns && (
-									<ColumnComponent
-										title=""
-										titleEditHandler={onColumnAdd}
-										isNew
-									></ColumnComponent>
-								)}
-						</Container>
-					)}
-				</Droppable>
-			)}
-		</DragDropContext>
+										return (
+											<Column
+												key={column._id}
+												tasks={tasks}
+												column={column}
+												index={index}
+												maxTasks={column.maxTasks}
+												onTaskAdd={onTaskAdd}
+												onColumnEdit={onColumnEdit}
+												onTaskEdit={onTaskEdit}
+												onTaskDelete={onTaskDelete}
+												deleteHandler={onColumnDelete}
+											/>
+										);
+									}
+								})}
+								{provided.placeholder}
+								{state &&
+									state.board &&
+									!state.board.maxColumns && (
+										<ColumnComponent
+											title=""
+											titleEditHandler={onColumnAdd}
+											isNew
+										></ColumnComponent>
+									)}
+							</Container>
+						)}
+					</Droppable>
+				)}
+			</DragDropContext>
+		</div>
 	);
 };
 
