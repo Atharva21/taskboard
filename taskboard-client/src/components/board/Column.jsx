@@ -24,6 +24,7 @@ const Column = ({
 	onColumnEdit,
 	onTaskEdit,
 	onTaskDelete,
+	deleteHandler,
 }) => {
 	const taskEditHandler = (newContent) => {
 		onTaskAdd(newContent, column._id);
@@ -31,6 +32,10 @@ const Column = ({
 
 	const titleEditHandler = (newContent) => {
 		onColumnEdit(column._id, newContent);
+	};
+
+	const onColumnDelete = () => {
+		deleteHandler(column._id);
 	};
 
 	return (
@@ -43,6 +48,7 @@ const Column = ({
 					innerRef={provided.innerRef}
 					title={column.title}
 					isDragging={snapshot.isDragging}
+					deleteHandler={onColumnDelete}
 				>
 					<Droppable droppableId={column._id} type="task">
 						{(provided, snapshot) => (
@@ -52,24 +58,29 @@ const Column = ({
 								isDraggingOver={snapshot.isDraggingOver}
 							>
 								{tasks.map((task, idx) => {
-									return (
-										<Task
-											task={task}
-											key={task._id}
-											index={idx}
-											onTaskEdit={onTaskEdit}
-											onDelete={(taskId) =>
-												onTaskDelete(taskId, column._id)
-											}
-										></Task>
-									);
+									if (task && task._id) {
+										return (
+											<Task
+												task={task}
+												key={task._id}
+												index={idx}
+												onTaskEdit={onTaskEdit}
+												onDelete={(taskId) =>
+													onTaskDelete(
+														taskId,
+														column._id
+													)
+												}
+											></Task>
+										);
+									}
 								})}
 								{provided.placeholder}
 								{!maxTasks && (
 									<TaskComponent
 										content=""
 										taskEditHandler={taskEditHandler}
-										disableDelete
+										isNew
 									></TaskComponent>
 								)}
 							</TaskList>

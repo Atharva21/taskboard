@@ -28,6 +28,7 @@ const Board = ({ match }) => {
 			const result = await axios.get(`/boards/${match.params.id}`);
 			setState(result.data.data);
 		} catch (error) {
+			console.error(error);
 			console.error(error.response.data);
 		}
 	};
@@ -230,6 +231,32 @@ const Board = ({ match }) => {
 		}
 	};
 
+	const onColumnDelete = async (columnId) => {
+		try {
+			const result = await axios.delete(`/columns/${columnId}`, {
+				data: { boardId: match.params.id },
+			});
+			if (result.status === 200) {
+				const newState = { ...state };
+				const newBoard = newState.board;
+				newBoard.columnIds = newBoard.columnIds.filter(
+					(colId) => colId !== columnId
+				);
+				const newColumns = {};
+				Object.entries(newState.columns).forEach(([key, value]) => {
+					if (key !== columnId) {
+						newColumns[key] = value;
+					}
+				});
+				newState.columns = newColumns;
+				newState.board["maxColumns"] = false;
+				setState(newState);
+			}
+		} catch (error) {
+			console.error(error.response.data);
+		}
+	};
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			{state && state.board && (
@@ -246,23 +273,26 @@ const Board = ({ match }) => {
 						>
 							{state.board.columnIds.map((colId, index) => {
 								const column = state.columns[colId];
-								const tasks = column.taskIds.map(
-									(taskId) => state.tasks[taskId]
-								);
+								if (column && column._id) {
+									const tasks = column.taskIds.map(
+										(taskId) => state.tasks[taskId]
+									);
 
-								return (
-									<Column
-										key={column._id}
-										tasks={tasks}
-										column={column}
-										index={index}
-										maxTasks={column.maxTasks}
-										onTaskAdd={onTaskAdd}
-										onColumnEdit={onColumnEdit}
-										onTaskEdit={onTaskEdit}
-										onTaskDelete={onTaskDelete}
-									/>
-								);
+									return (
+										<Column
+											key={column._id}
+											tasks={tasks}
+											column={column}
+											index={index}
+											maxTasks={column.maxTasks}
+											onTaskAdd={onTaskAdd}
+											onColumnEdit={onColumnEdit}
+											onTaskEdit={onTaskEdit}
+											onTaskDelete={onTaskDelete}
+											deleteHandler={onColumnDelete}
+										/>
+									);
+								}
 							})}
 							{provided.placeholder}
 							{state &&
@@ -271,6 +301,7 @@ const Board = ({ match }) => {
 									<ColumnComponent
 										title=""
 										titleEditHandler={onColumnAdd}
+										isNew
 									></ColumnComponent>
 								)}
 						</Container>

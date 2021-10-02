@@ -81,19 +81,8 @@ exports.addTaskIdToColumn = async (columnId, taskId) => {
 
 exports.removeTaskIdFromColumn = async (columnId, taskId) => {
 	try {
-		const updatedColumn = await ColumnModel.findByIdAndUpdate(
-			columnId,
-			{
-				$pull: {
-					taskIds: new Types.ObjectId(taskId),
-				},
-			},
-			{
-				new: true,
-			}
-		);
-		log.info(JSON.stringify(updatedColumn));
-		if (!updatedColumn) {
+		const column = await ColumnModel.findById(columnId);
+		if (!column) {
 			return Promise.reject(
 				new APIError({
 					statusCode: 404,
@@ -101,6 +90,17 @@ exports.removeTaskIdFromColumn = async (columnId, taskId) => {
 				})
 			);
 		}
+		const taskIds = column.taskIds;
+		const newTaskIds = taskIds.filter((tskId) => tskId !== taskId);
+		const updatedColumn = await ColumnModel.findByIdAndUpdate(
+			columnId,
+			{
+				taskIds: [...newTaskIds],
+			},
+			{
+				new: true,
+			}
+		);
 		return updatedColumn;
 	} catch (error) {
 		return Promise.reject(error);
@@ -137,7 +137,7 @@ exports.deleteMultipleColumns = async (columnIds) => {
 		);
 		await Promise.all(
 			deletedColumns.map((column) =>
-				taskService.deleteMultipleTasks(column.taskIds)
+				taskService.deleteMultipleTasks(column?.taskIds)
 			)
 		);
 		return deletedColumns;

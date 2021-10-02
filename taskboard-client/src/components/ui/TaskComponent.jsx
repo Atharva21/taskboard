@@ -101,7 +101,7 @@ const TaskComponent = (props) => {
 				{props.content}
 			</Content>
 			<DeleteButton
-				disableDelete={props.disableDelete}
+				disableDelete={props.isNew}
 				isHovering={hovering}
 				onClick={props.deleteHandler}
 			>

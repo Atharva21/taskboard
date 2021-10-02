@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-
+import useHover from "react-use-hover";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -13,18 +13,38 @@ const Container = styled.div`
 	flex-direction: column;
 	overflow: hidden;
 `;
-const Title = styled.h3`
+const Title = styled.div`
 	border-radius: 0.7em;
-	padding: 8px;
-
+	min-height: 50px;
+	padding: 8px 1px;
+	display: flex;
+	flex-direction: row;
 	&:hover {
 		cursor: grab;
 	}
 `;
 
+const H3 = styled.h3`
+	margin: 0px 10px;
+	height: 100%;
+	word-break: break-word;
+	flex-grow: 1;
+`;
+
+const DeleteButton = styled.button`
+	color: red;
+	font-weight: 900;
+	display: ${(props) =>
+		props.disableDelete ? "none" : props.isHovering ? "block" : "none"};
+
+	&:hover {
+		cursor: pointer;
+	}
+`;
+
 const ColumnComponent = (props) => {
 	const titleRef = useRef();
-
+	const [hovering, hoverProps] = useHover({ mouseEnterDelayMS: 300 });
 	const [isEditing, setEditing] = useState(false);
 
 	const toggleEditable = () => {
@@ -69,13 +89,10 @@ const ColumnComponent = (props) => {
 		>
 			<Title
 				{...props.dragHandleProps}
-				ref={titleRef}
+				{...hoverProps}
 				onDoubleClick={clickHandler}
 				onBlur={onBlurHandler}
 				onKeyDown={keyDownHandler}
-				spellCheck="false"
-				contentEditable={isEditing ? "true" : "false"}
-				suppressContentEditableWarning={true}
 				style={
 					isEditing
 						? {
@@ -86,9 +103,22 @@ const ColumnComponent = (props) => {
 								cursor: "inherit",
 						  }
 				}
-				ref={titleRef}
 			>
-				{props.title}
+				<H3
+					ref={titleRef}
+					spellCheck="false"
+					contentEditable={isEditing ? "true" : "false"}
+					suppressContentEditableWarning={true}
+				>
+					{props.title}
+				</H3>
+				<DeleteButton
+					disableDelete={props.isNew}
+					isHovering={hovering}
+					onClick={props.deleteHandler}
+				>
+					X
+				</DeleteButton>
 			</Title>
 			{props.children}
 		</Container>

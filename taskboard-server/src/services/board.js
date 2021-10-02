@@ -104,18 +104,8 @@ exports.addColumnIdToBoard = async (boardId, columnId) => {
 
 exports.removeColumnIdFromBoard = async (boardId, columnId) => {
 	try {
-		const updatedBoard = await BoardModel.findByIdAndUpdate(
-			boardId,
-			{
-				$pull: {
-					columnIds: new Types.ObjectId(columnId),
-				},
-			},
-			{
-				new: true,
-			}
-		);
-		if (!updatedBoard) {
+		const board = await BoardModel.findById(boardId);
+		if (!board) {
 			return Promise.reject(
 				new APIError({
 					statusCode: 404,
@@ -123,6 +113,15 @@ exports.removeColumnIdFromBoard = async (boardId, columnId) => {
 				})
 			);
 		}
+		const columnIds = board.columnIds;
+		const newColumnIds = columnIds.filter((colId) => colId != columnId);
+		const updatedBoard = await BoardModel.findByIdAndUpdate(
+			boardId,
+			{
+				columnIds: [...newColumnIds],
+			},
+			{ new: true }
+		);
 		return updatedBoard;
 	} catch (error) {
 		return Promise.reject(error);
