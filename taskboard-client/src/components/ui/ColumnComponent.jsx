@@ -45,12 +45,12 @@ const ColumnComponent = (props) => {
 		}, 0);
 
 		if (
-			titleRef.current.innerHTML &&
-			props.title !== titleRef.current.innerHTML &&
-			titleRef.current.innerHTML.length > 0
+			titleRef.current.innerText &&
+			props.title !== titleRef.current.innerText &&
+			titleRef.current.innerText.length > 0
 		) {
-			const newTitle = titleRef.current.innerHTML;
-			titleRef.current.innerHTML = props.title;
+			const newTitle = titleRef.current.innerText;
+			titleRef.current.innerText = props.title;
 			props.titleEditHandler(newTitle);
 		}
 	};

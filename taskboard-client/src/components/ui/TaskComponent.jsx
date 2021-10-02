@@ -61,11 +61,11 @@ const TaskComponent = (props) => {
 		}, 0);
 
 		if (
-			contentRef.current.innerHTML &&
-			contentRef.current.innerHTML.length > 0
+			contentRef.current.innerText &&
+			contentRef.current.innerText.length > 0
 		) {
-			const newContent = contentRef.current.innerHTML;
-			contentRef.current.innerHTML = props.content;
+			const newContent = contentRef.current.innerText;
+			contentRef.current.innerText = props.content;
 			props.taskEditHandler(newContent);
 		}
 	};
