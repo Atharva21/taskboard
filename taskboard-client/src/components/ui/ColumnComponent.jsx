@@ -81,6 +81,16 @@ const ColumnComponent = (props) => {
 		}
 	};
 
+	const getClickProps = () => {
+		return props.isNew
+			? {
+					onClick: clickHandler,
+			  }
+			: {
+					onDoubleClick: clickHandler,
+			  };
+	};
+
 	return (
 		<Container
 			ref={props.innerRef}
@@ -90,7 +100,7 @@ const ColumnComponent = (props) => {
 			<Title
 				{...props.dragHandleProps}
 				{...hoverProps}
-				onDoubleClick={clickHandler}
+				{...getClickProps()}
 				onBlur={onBlurHandler}
 				onKeyDown={keyDownHandler}
 				style={

@@ -1,9 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "../../config/axios";
 import { useHistory } from "react-router-dom";
+import StyledBoardComponent from "../ui/StyledBoardComponent";
 import styled from "styled-components";
 
 const Container = styled.div`
+	display: flex;
+	flex-direction: column;
+	margin-left: 2em;
 	margin-top: 4em;
 	user-select: none;
 `;
@@ -12,12 +16,6 @@ const StyledBoardList = styled.div`
 	padding: 1em;
 	display: flex;
 	align-items: flex-start;
-`;
-
-const StyledBoard = styled.div`
-	padding: 1em;
-	background-color: #f2b138;
-	margin-right: 1em;
 `;
 
 const BoardList = () => {
@@ -51,6 +49,7 @@ const BoardList = () => {
 	const addBoardHandler = async () => {
 		try {
 			const title = inputRef.current.value;
+			inputRef.current.value = "";
 			await axios.post("/boards", {
 				title,
 			});
@@ -60,19 +59,29 @@ const BoardList = () => {
 		}
 	};
 
+	const deleteHandler = async (boardId) => {
+		try {
+			const result = await axios.delete(`/boards/${boardId}`);
+			await fetchData();
+		} catch (error) {
+			console.error(error.response.data);
+		}
+	};
+
 	return (
 		<Container>
+			<h1>My Boards:</h1>
 			{boards && (
 				<StyledBoardList>
 					{boards.boards.map((board) => {
 						return (
-							<StyledBoard
+							<StyledBoardComponent
 								key={board._id}
-								style={{ border: "1px solid blue" }}
-								onClick={() => onBoardClicked(board._id)}
-							>
-								{board.title}
-							</StyledBoard>
+								title={board.title}
+								boardId={board._id}
+								onBoardClicked={onBoardClicked}
+								deleteHandler={deleteHandler}
+							/>
 						);
 					})}
 				</StyledBoardList>

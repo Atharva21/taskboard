@@ -74,13 +74,23 @@ const TaskComponent = (props) => {
 		setEditing((prev) => !prev);
 	};
 
+	const getClickProps = () => {
+		return props.isNew
+			? {
+					onClick: clickHandler,
+			  }
+			: {
+					onDoubleClick: clickHandler,
+			  };
+	};
+
 	return (
 		<Container
 			{...props}
 			ref={props.innerRef}
-			onDoubleClick={clickHandler}
 			onBlur={onBlurHandler}
 			{...hoverProps}
+			{...getClickProps()}
 		>
 			<Content
 				spellCheck="false"
