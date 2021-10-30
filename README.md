@@ -1,3 +1,3 @@
 # taskboard
 
-![taskboard.gif](https://gfycat.com/acrobaticjitterybluejay)
+![taskboard.gif](https://i.postimg.cc/65pyYcbX/Task-Board-1.gif)
