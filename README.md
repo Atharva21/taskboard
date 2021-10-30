@@ -20,6 +20,8 @@ clone the repo `git clone https://github.com/Atharva21/taskboard.git`
 
     `docker run mongo -p 27017:27017`
 
+    refer to `.env.sample` and create a `.env` file with a `SESSION_SECRET`
+
     to serve the backend: `yarn dev`
 
 -   Frontend
