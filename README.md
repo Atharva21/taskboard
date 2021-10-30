@@ -1,3 +1,3 @@
 # taskboard
 
-![taskboard-image](https://gifyu.com/image/eU88)
+![taskboard-image](https://s9.gifyu.com/images/TaskBoard-1.gif)
