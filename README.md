@@ -18,11 +18,11 @@ clone the repo `git clone https://github.com/Atharva21/taskboard.git`
 
     The backend is dependent on redis, and mongodb, we will use docker to get those two running.
 
-        docker run redis -p 6379:6379
+        docker run redis -d -p 6379:6379
 
     ***
 
-        docker run mongo -p 27017:27017
+        docker run mongo -d -p 27017:27017
 
     refer to `.env.sample` and create a `.env` file with a `SESSION_SECRET`
 
