@@ -2,7 +2,8 @@
 
 Taskboard is a self hosted service to manage your day-to-day tasks in a organized way.
 
-![taskboard.gif](https://i.postimg.cc/1zQgcQLW/Task-Board-2-1.gif)
+![68747470733a2f2f692e706f7374696d672e63632f317a516763514c572f5461736b2d426f6172642d322d312e676966](https://user-images.githubusercontent.com/35420813/165197635-40cc2bbf-a7f4-4509-9993-5a317810b87d.gif)
+
 
 ## Getting Started
 
